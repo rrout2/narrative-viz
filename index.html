@@ -33,24 +33,48 @@
 <script src='https://d3js.org/d3.v5.min.js'></script>
 <style> circle {fill: lightblue; stroke: black;} </style>
 <body onload='init()'>
-  <a href="page2/index.html">Page 2</a>
-  <button onclick="clear()">Click me</button>
-  <svg width=300 height=300>
-  </svg>
+  <!-- <a href="page2/index.html">Page 2</a>
+  <button onclick="clear()">Click me</button> -->
+  <!-- <svg width=1000 height=1000>
+  </svg> -->
   <script>
+  var pie = d3.pie();
+  var arc = d3.arc().innerRadius(0).outerRadius(400);
   async function init() {
-    const data = await d3.csv('covid_race.csv');
-    // console.log(data[0]);
-    // var logScaleX = d3.scaleLog().domain([10,150]).range([0,200]);
-    // var logScaleY = d3.scaleLog().domain([10,150]).range([200,0]);
-    //
-    // d3.select("svg").append("g").attr("transform","translate("+50+","+50+")").selectAll().data(data).enter().append("circle")
-    //   .attr("cx", function(d,i) {return logScaleX(d.AverageCityMPG);})
-    //   .attr("cy", function(d,i) {return logScaleY(d.AverageHighwayMPG);})
-    //   .attr("r", function(d,i) {return parseInt(2) + parseInt(d.EngineCylinders);});
-    //
-    // d3.select("svg").append("g").attr("transform","translate("+50+","+50+")").call(d3.axisLeft(logScaleY).tickValues([10,20,50,100]).tickFormat(d3.format("~s")));
-    // d3.select("svg").append("g").attr("transform","translate("+50+","+250+")").call(d3.axisBottom(logScaleX).tickValues([10,20,50,100]).tickFormat(d3.format("~s")));
+    const illinois_pop_race = [{"white": 9731959, "black": 1850086, "aian": 76031, "asian": 747637, "nhpi": 12672, "mult": 266108}]
+    const illpop_race = [9731959,1850086, 76031, 747637, 12672, 266108]
+    var color = ['pink','lightyellow','lightgreen','lightcyan','lightblue','violet'];
+    var names = ["White", "Black", "AIAN", "Asian", "NHPI", "Multiple"]
+
+    var svg = d3.select("body").append("svg")
+      .attr("width", 1500)
+      .attr("height",800)
+      .append("g")
+      .attr("transform", "translate(" + 1500 / 2 + "," + 800 / 2 + ")");
+
+    d3.select("svg")
+    .select("g")
+    .selectAll()
+    .data(pie(illpop_race))
+    .enter()
+    .append("path")
+    .attr("d", arc)
+    .attr("fill", function(d,i) {return color[i];})
+    .on("mouseover", function(d, i) {
+          console.log(d);
+          svg.append("text")
+            .attr("dy", ".5em")
+            .style("text-anchor", "middle")
+            .style("font-size", 45)
+            .attr("class","label")
+            .style("fill", "black")
+            .text(names[i] + ": " + d.data);
+          })
+          .on("mouseout", function(d) {
+            svg.select(".label").remove();
+          });
+
+    const data = await d3.csv('https://raw.githubusercontent.com/rrout2/narrative-viz/master/covid_race.csv');
   }
   function clear() {
     d3.select("body").html = "";
