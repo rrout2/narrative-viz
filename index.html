@@ -33,18 +33,17 @@
 <script src='https://d3js.org/d3.v5.min.js'></script>
 <style> circle {fill: lightblue; stroke: black;} </style>
 <body onload='init()'>
-  <!-- <a href="page2/index.html">Page 2</a>
-  <button onclick="clear()">Click me</button> -->
-  <!-- <svg width=1000 height=1000>
-  </svg> -->
+  <p><button onclick="toggleWhite()">Toggle White</button></p>
   <script>
+  var white = true;
   var pie = d3.pie();
   var arc = d3.arc().innerRadius(0).outerRadius(400);
+  var illpop_race = [9731959,1850086, 76031, 747637, 12672, 266108];
+  var names = ["White", "Black", "AIAN", "Asian", "NHPI", "Multiple"];
   async function init() {
     const illinois_pop_race = [{"white": 9731959, "black": 1850086, "aian": 76031, "asian": 747637, "nhpi": 12672, "mult": 266108}]
-    const illpop_race = [9731959,1850086, 76031, 747637, 12672, 266108]
-    var color = ['pink','lightyellow','lightgreen','lightcyan','lightblue','violet'];
-    var names = ["White", "Black", "AIAN", "Asian", "NHPI", "Multiple"]
+
+    var color = {9731959:'lightblue',1850086:'pink',76031:'lightgreen',747637:'cyan',12672:'lightblue',266108:'violet'};
 
     var svg = d3.select("body").append("svg")
       .attr("width", 1500)
@@ -59,7 +58,7 @@
     .enter()
     .append("path")
     .attr("d", arc)
-    .attr("fill", function(d,i) {return color[i];})
+    .attr("fill", function(d,i) {var x = d.data; console.log(color[d.data]); return color[d.data];})
     .on("mouseover", function(d, i) {
           console.log(d);
           svg.append("text")
@@ -76,6 +75,22 @@
 
     const data = await d3.csv('https://raw.githubusercontent.com/rrout2/narrative-viz/master/covid_race.csv');
   }
+
+  async function toggleWhite() {
+    if (white) {
+      white = false;
+      var index = names.indexOf("White");
+      names.splice(index, 1);
+      index = illpop_race.indexOf(9731959);
+      illpop_race.splice(index, 1);
+    } else {
+      white = true;
+      names.push("White");
+      illpop_race.push(9731959);
+    }
+    init();
+  }
+
   function clear() {
     d3.select("body").html = "";
   }
