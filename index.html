@@ -1,17 +1,35 @@
+<!DOCTYPE html>
 <html>
 <head>
-  <title>Starting Point</title>
+  <title>The Relationship Between Covid-19 and Race: A Narrative Visualization</title>
 </head>
 <script src='https://d3js.org/d3.v5.min.js'></script>
-<style> circle {fill: lightblue; stroke: black;} </style>
-<body onload='init()'>
+<style> 
+  circle {fill: #FFEAD0; stroke: black;}
+  .center {
+    text-align: center;
+    background-color: #1E1B18;
+  }
+  .title {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    color: #FFFAFF;
+  }
+</style>
+
+<body onload='init()' class="center">
+  <div>
+  <h1 class = 'title'>The Relationship Between Covid-19 and Race: A Narrative Visualization</h1>
+  <h2 class = 'page1 title'>Current Population By Race in Illinois</h2>
+  <h2 class = 'page2 title' hidden="true">Covid-19 Cases By Race in Illinois, April 15, 2020</h2>
+  <h2 class = 'page3 title' hidden="true">Covid-19 Cases By Race in Illinois, June 1, 2020</h2>
+  <h2 class = 'page4 title' hidden="true">Covid-19 Cases By Race in Illinois, July 15, 2020</h2>
   <p>
     <button onclick="toggleWhite()">Toggle White</button>
     <button onclick="toggleBlack()">Toggle Black</button>
     <button onclick="toggleAian()">Toggle AIAN</button>
     <button onclick="toggleAsian()">Toggle Asian</button>
     <button onclick="toggleNhpi()">Toggle NHPI</button>
-    <button onclick="toggleMult()">Toggle Multiple Races</button>
+    <!-- <button onclick="toggleMult()">Toggle Multiple Races</button> -->
     <button onclick="addAll()">Add All</button>
     <button onclick="removeAll()">Remove All</button>
   </p>
@@ -19,6 +37,7 @@
     <button onclick="prevPage()">Previous</button>
     <button onclick="nextPage()">Next</button>
   </p>
+  <div>
   <script>
 
   // toggle vars
@@ -28,31 +47,41 @@
   var aian = true;
   var asian = true;
   var nhpi = true;
-  var mult = true;
+  // var mult = true;
 
   // pie chart
   var pie = d3.pie();
   var arc = d3.arc().innerRadius(0).outerRadius(400);
-  var illpop_race = [9731959,1850086, 76031, 747637, 12672, 266108];
-  var names = ["White", "Black", "AIAN", "Asian", "NHPI", "Multiple"];
+  var illpop_race = [9731959,1850086, 76031, 747637, 12672];
+  var names = ["White", "Black", "AIAN", "Asian", "NHPI"];
+  const default_vals = {9731959:'#D8315B',1850086:'#3E92CC',76031:'#FB8B24',747637:'#0A2463',12672:'#FFEAD0'}
+
+
+  var cur_vals = JSON.parse(JSON.stringify(default_vals));
+  var pie_vals = JSON.parse(JSON.stringify(illpop_race));
+
   var svg = d3.select("body").append("svg")
     .attr("width", 1500)
     .attr("height",800)
     .append("g")
     .attr("transform", "translate(" + 1500 / 2 + "," + 800 / 2 + ")");
-
-  // innit
+  var data;
+  var color;
+  var pieeee;
+  color = JSON.parse(JSON.stringify(cur_vals));
+  pieeee = JSON.parse(JSON.stringify(pie_vals));
   async function init() {
     // const illinois_pop_race = [{"white": 9731959, "black": 1850086, "aian": 76031, "asian": 747637, "nhpi": 12672, "mult": 266108}]
-    var color = {9731959:'pink',1850086:'lightyellow',76031:'lightgreen',747637:'lightcyan',12672:'lightblue',266108:'violet'};
 
+    // color = JSON.parse(JSON.stringify(cur_vals));
+    // pieeee = JSON.parse(JSON.stringify(pie_vals));
+    console.log(color);
 
-
-    if (white || black || aian || asian || nhpi || mult) {
+    if (white || black || aian || asian || nhpi) {
       d3.select("svg")
       .select("g")
       .selectAll()
-      .data(pie(illpop_race))
+      .data(pie(pieeee))
       .enter()
       .append("path")
       .attr("d", arc)
@@ -63,9 +92,10 @@
               .attr("dy", ".5em")
               .style("text-anchor", "middle")
               .style("font-size", 45)
+              .style("font-family", '"Lucida Sans Unicode", "Lucida Grande", sans-serif')
               .attr("class","label")
-              .style("fill", "black")
-              .text(names[i] + ": " + d.data);
+              .style("fill", "#FFFAFF")
+              .text(/*names[i] + ": " + */d.data);
             })
             .on("mouseout", function(d) {
               svg.select(".label").remove();
@@ -74,41 +104,169 @@
       svg.selectAll("path").remove();
     }
 
-    const data = await d3.csv('https://raw.githubusercontent.com/rrout2/narrative-viz/master/covid_race.csv');
+    const dataa = await d3.csv('https://raw.githubusercontent.com/rrout2/narrative-viz/master/covid_race.csv');
+    data = dataa;
   }
 
-  // toggle functions 
+  function nextPage() {
+    if (page_num == 0) {
+      page_num += 1;
+      d3.select('.page1').attr('hidden','true');
+      d3.select('.page2').attr('hidden', null);
+      var data_4_15 = [data[1472].Cases_White, data[1472].Cases_Black, data[1472].Cases_AIAN, data[1472].Cases_Asian, data[1472].Cases_NHPI];
+
+      cur_vals = JSON.parse(JSON.stringify({6127:'#D8315B',6331:'#3E92CC',34:'#FB8B24',847:'#0A2463',33:'#FFEAD0'}));
+      pie_vals = JSON.parse(JSON.stringify(data_4_15));
+      color = JSON.parse(JSON.stringify(cur_vals));
+      pieeee = JSON.parse(JSON.stringify(pie_vals));
+    } else if (page_num == 1) {
+      page_num += 1;
+      d3.select('.page2').attr('hidden','true');
+      d3.select('.page3').attr('hidden', null);
+      var data_6_1 = [data[744].Cases_White, data[744].Cases_Black, data[744].Cases_AIAN, data[744].Cases_Asian, data[744].Cases_NHPI];
+
+      cur_vals = JSON.parse(JSON.stringify({23426:'#D8315B',19939:'#3E92CC',191:'#FB8B24',3465:'#0A2463',294:'#FFEAD0'}));
+      pie_vals = JSON.parse(JSON.stringify(data_6_1));
+      color = JSON.parse(JSON.stringify(cur_vals));
+      pieeee = JSON.parse(JSON.stringify(pie_vals));
+    } else if (page_num == 2) {
+      page_num += 1;
+      d3.select('.page3').attr('hidden','true');
+      d3.select('.page4').attr('hidden', null);
+      var data_7_15 = [data[16].Cases_White, data[16].Cases_Black, data[16].Cases_AIAN, data[16].Cases_Asian, data[16].Cases_NHPI];
+
+      cur_vals = JSON.parse(JSON.stringify({34463:'#D8315B',26330:'#3E92CC',228:'#FB8B24',4373:'#0A2463',390:'#FFEAD0'}));
+      pie_vals = JSON.parse(JSON.stringify(data_7_15));
+      color = JSON.parse(JSON.stringify(cur_vals));
+      pieeee = JSON.parse(JSON.stringify(pie_vals));
+    } else if (page_num == 3) {
+      alert("This is the last page!")
+      return;
+    }
+    if (!white) {
+        white = true;
+        toggleWhite();
+        white = false;
+    }
+    if (!black) {
+      black = true;
+      toggleBlack();
+      black = false;
+    }
+    if (!aian) {
+      aian = true;
+      toggleAian();
+      aian = false;
+    }
+    if (!asian) {
+      asian = true;
+      toggleAsian();
+      asian = false;
+    }
+    if (!nhpi) {
+      nhpi = true;
+      toggleNhpi();
+      nhpi = false;
+    }
+    init();
+  }
+
+  function prevPage() {
+    if (page_num == 0) {
+      alert("This is the first page!");
+      return;
+    } else if (page_num == 1) {
+      page_num--;
+      d3.select('.page1').attr('hidden', null);
+      d3.select('.page2').attr('hidden', 'true');
+      var cur_vals = JSON.parse(JSON.stringify(default_vals));
+      var pie_vals = JSON.parse(JSON.stringify(illpop_race));
+
+      color = JSON.parse(JSON.stringify(cur_vals));
+      pieeee = JSON.parse(JSON.stringify(pie_vals));
+    } else if (page_num == 2) {
+      page_num--;
+      d3.select('.page2').attr('hidden', null);
+      d3.select('.page3').attr('hidden', 'true');
+      var data_4_15 = [data[1472].Cases_White, data[1472].Cases_Black, data[1472].Cases_AIAN, data[1472].Cases_Asian, data[1472].Cases_NHPI];
+
+      cur_vals = JSON.parse(JSON.stringify({6127:'#D8315B',6331:'#3E92CC',34:'#FB8B24',847:'#0A2463',33:'#FFEAD0'}));
+      pie_vals = JSON.parse(JSON.stringify(data_4_15));
+      color = JSON.parse(JSON.stringify(cur_vals));
+      pieeee = JSON.parse(JSON.stringify(pie_vals));
+    } else if (page_num == 3) {
+      page_num--;
+      d3.select('.page3').attr('hidden', null);
+      d3.select('.page4').attr('hidden', 'true');
+      var data_6_1 = [data[744].Cases_White, data[744].Cases_Black, data[744].Cases_AIAN, data[744].Cases_Asian, data[744].Cases_NHPI];
+
+      cur_vals = JSON.parse(JSON.stringify({23426:'#D8315B',19939:'#3E92CC',191:'#FB8B24',3465:'#0A2463',294:'#FFEAD0'}));
+      pie_vals = JSON.parse(JSON.stringify(data_6_1));
+      color = JSON.parse(JSON.stringify(cur_vals));
+      pieeee = JSON.parse(JSON.stringify(pie_vals));
+    }
+
+
+    if (!white) {
+        white = true;
+        toggleWhite();
+        white = false;
+    }
+    if (!black) {
+      black = true;
+      toggleBlack();
+      black = false;
+    }
+    if (!aian) {
+      aian = true;
+      toggleAian();
+      aian = false;
+    }
+    if (!asian) {
+      asian = true;
+      toggleAsian();
+      asian = false;
+    }
+    if (!nhpi) {
+      nhpi = true;
+      toggleNhpi();
+      nhpi = false;
+    }
+    init();
+  }
+
+  // toggle functions
   async function addAll() {
     if (!white) {
       white = true;
       names.push("White");
-      illpop_race.push(9731959);
+      pieeee.push(pie_vals[0]);
     }
     if (!black) {
       white = true;
       names.push("Black");
-      illpop_race.push(1850086);
+      pieeee.push(pie_vals[1]);
     }
     if (!aian) {
       white = true;
       names.push("AIAN");
-      illpop_race.push(76031);
+      pieeee.push(pie_vals[2]);
     }
     if (!asian) {
       white = true;
       names.push("Asian");
-      illpop_race.push(747637);
+      pieeee.push(pie_vals[3]);
     }
     if (!nhpi) {
       white = true;
       names.push("NHPI");
-      illpop_race.push(12672);
+      pieeee.push(pie_vals[4]);
     }
-    if (!mult) {
-      white = true;
-      names.push("Multiple");
-      illpop_race.push(266108);
-    }
+    // if (!mult) {
+    //   white = true;
+    //   names.push("Multiple");
+    //   illpop_race.push(266108);
+    // }
     init();
   }
 
@@ -117,43 +275,36 @@
       white = false;
       var index = names.indexOf("White");
       names.splice(index, 1);
-      index = illpop_race.indexOf(9731959);
-      illpop_race.splice(index, 1);
+      index = pieeee.indexOf(pie_vals[0]);
+      pieeee.splice(index, 1);
     }
     if (black) {
       black = false;
       var index = names.indexOf("Black");
       names.splice(index, 1);
-      index = illpop_race.indexOf(1850086);
-      illpop_race.splice(index, 1);
+      index = pieeee.indexOf(pie_vals[1]);
+      pieeee.splice(index, 1);
     }
     if (aian) {
       aian = false;
       var index = names.indexOf("AIAN");
       names.splice(index, 1);
-      index = illpop_race.indexOf(76031);
-      illpop_race.splice(index, 1);
+      index = pieeee.indexOf(pie_vals[2]);
+      pieeee.splice(index, 1);
     }
     if (asian) {
       asian = false;
       var index = names.indexOf("Asian");
       names.splice(index, 1);
-      index = illpop_race.indexOf(747637);
-      illpop_race.splice(index, 1);
+      index = pieeee.indexOf(pie_vals[3]);
+      pieeee.splice(index, 1);
     }
     if (nhpi) {
       nhpi = false;
       var index = names.indexOf("NHPI");
       names.splice(index, 1);
-      index = illpop_race.indexOf(12672);
-      illpop_race.splice(index, 1);
-    }
-    if (mult) {
-      mult = false;
-      var index = names.indexOf("Multiple");
-      names.splice(index, 1);
-      index = illpop_race.indexOf(266108);
-      illpop_race.splice(index, 1);
+      index = pieeee.indexOf(pie_vals[4]);
+      pieeee.splice(index, 1);
     }
     init();
   }
@@ -163,12 +314,12 @@
       white = false;
       var index = names.indexOf("White");
       names.splice(index, 1);
-      index = illpop_race.indexOf(9731959);
-      illpop_race.splice(index, 1);
+      index = pieeee.indexOf(pie_vals[0]);
+      pieeee.splice(index, 1);
     } else {
       white = true;
       names.push("White");
-      illpop_race.push(9731959);
+      pieeee.push(pie_vals[0]);
     }
     init();
   }
@@ -178,12 +329,12 @@
       black = false;
       var index = names.indexOf("Black");
       names.splice(index, 1);
-      index = illpop_race.indexOf(1850086);
-      illpop_race.splice(index, 1);
+      index = pieeee.indexOf(pie_vals[1]);
+      pieeee.splice(index, 1);
     } else {
       black = true;
       names.push("Black");
-      illpop_race.push(1850086);
+      pieeee.push(pie_vals[1]);
     }
     init();
   }
@@ -193,12 +344,12 @@
       aian = false;
       var index = names.indexOf("AIAN");
       names.splice(index, 1);
-      index = illpop_race.indexOf(76031);
-      illpop_race.splice(index, 1);
+      index = pieeee.indexOf(pie_vals[2]);
+      pieeee.splice(index, 1);
     } else {
       aian = true;
       names.push("AIAN");
-      illpop_race.push(76031);
+      pieeee.push(pie_vals[2]);
     }
     init();
   }
@@ -207,12 +358,12 @@
       asian = false;
       var index = names.indexOf("Asian");
       names.splice(index, 1);
-      index = illpop_race.indexOf(747637);
-      illpop_race.splice(index, 1);
+      index = pieeee.indexOf(pie_vals[3]);
+      pieeee.splice(index, 1);
     } else {
       asian = true;
       names.push("Asian");
-      illpop_race.push(747637);
+      pieeee.push(pie_vals[3]);
     }
     init();
   }
@@ -221,26 +372,12 @@
       nhpi = false;
       var index = names.indexOf("NHPI");
       names.splice(index, 1);
-      index = illpop_race.indexOf(12672);
-      illpop_race.splice(index, 1);
+      index = pieeee.indexOf(pie_vals[4]);
+      pieeee.splice(index, 1);
     } else {
       nhpi = true;
       names.push("NHPI");
-      illpop_race.push(12672);
-    }
-    init();
-  }
-  async function toggleMult() {
-    if (mult) {
-      mult = false;
-      var index = names.indexOf("Multiple");
-      names.splice(index, 1);
-      index = illpop_race.indexOf(266108);
-      illpop_race.splice(index, 1);
-    } else {
-      mult = true;
-      names.push("Multiple");
-      illpop_race.push(266108);
+      pieeee.push(pie_vals[4]);
     }
     init();
   }
