@@ -14,6 +14,32 @@
     font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
     color: #FFFAFF;
   }
+
+  .button {
+    color: #FFFAFF;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  }
+
+  .button1 {
+    background-color: #D8315B;
+  }
+
+  .button2 {
+    background-color: #3E92CC;
+  }
+
+  .button3 {
+    background-color: #FB8B24;
+  }
+
+  .button4 {
+    background-color: #0A2463;
+  }
+
+  .button5 {
+    background-color: #FFEAD0;
+    color: #1E1B18;
+  }
 </style>
 
 <body onload='init()' class="center">
@@ -24,18 +50,18 @@
   <h2 class = 'page3 title' hidden="true">Covid-19 Cases By Race in Illinois, June 1, 2020</h2>
   <h2 class = 'page4 title' hidden="true">Covid-19 Cases By Race in Illinois, July 15, 2020</h2>
   <p>
-    <button onclick="toggleWhite()">Toggle White</button>
-    <button onclick="toggleBlack()">Toggle Black</button>
-    <button onclick="toggleAian()">Toggle AIAN</button>
-    <button onclick="toggleAsian()">Toggle Asian</button>
-    <button onclick="toggleNhpi()">Toggle NHPI</button>
+    <button onclick="toggleWhite()" class='button button1'>Toggle White</button>
+    <button onclick="toggleBlack()" class='button button2'>Toggle Black</button>
+    <button onclick="toggleAian()"  class='button button3'>Toggle AIAN</button>
+    <button onclick="toggleAsian()" class='button button4'>Toggle Asian</button>
+    <button onclick="toggleNhpi()"  class='button button5'>Toggle NHPI</button>
     <!-- <button onclick="toggleMult()">Toggle Multiple Races</button> -->
-    <button onclick="addAll()">Add All</button>
-    <button onclick="removeAll()">Remove All</button>
+    <!-- <button onclick="addAll()">Add All</button>
+    <button onclick="removeAll()">Remove All</button> -->
   </p>
   <p>
-    <button onclick="prevPage()">Previous</button>
-    <button onclick="nextPage()">Next</button>
+    <button onclick="prevPage()" class='prevbutt' disabled>Previous</button>
+    <button onclick="nextPage()" class='nextbutt'>Next</button>
   </p>
   <div>
   <script>
@@ -113,6 +139,8 @@
       page_num += 1;
       d3.select('.page1').attr('hidden','true');
       d3.select('.page2').attr('hidden', null);
+      d3.select('.prevbutt').attr('disabled', null);
+
       var data_4_15 = [data[1472].Cases_White, data[1472].Cases_Black, data[1472].Cases_AIAN, data[1472].Cases_Asian, data[1472].Cases_NHPI];
 
       cur_vals = JSON.parse(JSON.stringify({6127:'#D8315B',6331:'#3E92CC',34:'#FB8B24',847:'#0A2463',33:'#FFEAD0'}));
@@ -133,6 +161,7 @@
       page_num += 1;
       d3.select('.page3').attr('hidden','true');
       d3.select('.page4').attr('hidden', null);
+      d3.select('.nextbutt').attr('disabled', true);
       var data_7_15 = [data[16].Cases_White, data[16].Cases_Black, data[16].Cases_AIAN, data[16].Cases_Asian, data[16].Cases_NHPI];
 
       cur_vals = JSON.parse(JSON.stringify({34463:'#D8315B',26330:'#3E92CC',228:'#FB8B24',4373:'#0A2463',390:'#FFEAD0'}));
@@ -176,6 +205,8 @@
       alert("This is the first page!");
       return;
     } else if (page_num == 1) {
+      d3.select('.prevbutt').attr('disabled', true);
+
       page_num--;
       d3.select('.page1').attr('hidden', null);
       d3.select('.page2').attr('hidden', 'true');
@@ -198,6 +229,7 @@
       page_num--;
       d3.select('.page3').attr('hidden', null);
       d3.select('.page4').attr('hidden', 'true');
+      d3.select('.nextbutt').attr('disabled', null);
       var data_6_1 = [data[744].Cases_White, data[744].Cases_Black, data[744].Cases_AIAN, data[744].Cases_Asian, data[744].Cases_NHPI];
 
       cur_vals = JSON.parse(JSON.stringify({23426:'#D8315B',19939:'#3E92CC',191:'#FB8B24',3465:'#0A2463',294:'#FFEAD0'}));
@@ -262,11 +294,6 @@
       names.push("NHPI");
       pieeee.push(pie_vals[4]);
     }
-    // if (!mult) {
-    //   white = true;
-    //   names.push("Multiple");
-    //   illpop_race.push(266108);
-    // }
     init();
   }
 
