@@ -179,8 +179,8 @@
       page_num--;
       d3.select('.page1').attr('hidden', null);
       d3.select('.page2').attr('hidden', 'true');
-      var cur_vals = JSON.parse(JSON.stringify(default_vals));
-      var pie_vals = JSON.parse(JSON.stringify(illpop_race));
+      cur_vals = JSON.parse(JSON.stringify(default_vals));
+      pie_vals = JSON.parse(JSON.stringify(illpop_race));
 
       color = JSON.parse(JSON.stringify(cur_vals));
       pieeee = JSON.parse(JSON.stringify(pie_vals));
