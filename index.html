@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>The Relationship Between Covid-19 and Race: A Narrative Visualization</title>
+  <title>The Relationship Between COVID-19 and Race: A Narrative Visualization</title>
 </head>
 <script src='https://d3js.org/d3.v5.min.js'></script>
 <style> 
@@ -13,6 +13,21 @@
   .title {
     font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
     color: #FFFAFF;
+  }
+
+  .instr {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    color: gray;
+  }
+
+  .howto {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    color: gray;
+  }
+
+  .showinstr {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    color: gray;
   }
 
   .button {
@@ -44,12 +59,17 @@
   .buttonb {
     font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
     color: #1E1B18;
+    padding: 15px 15px;
+    font-size: 25px;
   }
 </style>
 
 <body onload='init()' class="center">
   <div>
-  <h1 class = 'title'>The Relationship Between Covid-19 and Race: A Narrative Visualization</h1>
+  <h1 class = 'title'>The Relationship Between COVID-19 and Race: A Narrative Visualization</h1>
+  <h3 class = 'instr' onclick="toggleHowTo()">How to Use</h3>
+  <h4 class = 'howto' onclick="toggleHowTo()">This is an interactive page: you can toggle off and on different races using the buttons below.<br>You can also compare population standards to different points in time by using the next and previous buttons.<br>If you hover over a slice of the chart, it will show the actual values!<br>Click on these instructions to collapse.</h3>
+  <h3 class = 'showinstr' onclick="toggleShowInstr()" hidden>Show Instructions</h3>
   <h2 class = 'page1 title'>Current Population By Race in Illinois</h2>
   <h2 class = 'page2 title' hidden="true">Covid-19 Cases By Race in Illinois, April 15, 2020</h2>
   <h2 class = 'page3 title' hidden="true">Covid-19 Cases By Race in Illinois, June 1, 2020</h2>
@@ -412,6 +432,18 @@
       pieeee.push(pie_vals[4]);
     }
     init();
+  }
+
+  async function toggleHowTo() {
+    d3.select('.instr').attr('hidden', true);
+    d3.select('.howto').attr('hidden', true);
+    d3.select('.showinstr').attr('hidden', null);
+  }
+
+  async function toggleShowInstr() {
+    d3.select('.instr').attr('hidden', null);
+    d3.select('.howto').attr('hidden', null);
+    d3.select('.showinstr').attr('hidden', true);
   }
   </script>
 </body>
